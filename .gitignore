@@ -16,6 +16,9 @@ backend/.env
 .DS_Store
 Thumbs.db
 
+# Claude Code local session state
+.claude/
+
 # Data
 data/*
 !data/.gitkeep

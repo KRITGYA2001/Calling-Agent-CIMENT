@@ -6,7 +6,7 @@ Scaffold prepped ahead of the problem statement (19 Sep 2026, Jaipur). Goal: zer
 
 - **Backend:** FastAPI (Python 3.11) — `backend/`
 - **Frontend:** React + TypeScript + Vite + Tailwind v4 — `frontend/`
-- **LLM:** Anthropic Claude, via `backend/app/services/llm.py`
+- **LLM:** provider-agnostic via `backend/app/services/llm.py` — defaults to **Groq (free tier)**, switch to Anthropic Claude by setting `LLM_PROVIDER=anthropic` in `.env`
 - **Data/exploration:** `notebooks/` (Jupyter), `data/` (gitignored, drop datasets here)
 
 Covers the JD's three focus areas out of the box:
@@ -50,6 +50,7 @@ Runs on `http://localhost:5173`, proxies `/api/*` to the backend (see `vite.conf
 
 ## Still to do before the day
 
-- [ ] Fill in `backend/.env` with a real `ANTHROPIC_API_KEY`
+- [ ] Get a free `GROQ_API_KEY` from [console.groq.com/keys](https://console.groq.com/keys) and drop it into `backend/.env` (copied from `.env.example`)
+- [ ] Optional: if you get Anthropic API credits before the day, add `ANTHROPIC_API_KEY` too and flip `LLM_PROVIDER=anthropic` for a quality boost
 - [ ] Decide if you want a GitHub remote (currently local-only git repo)
 - [ ] Skim CIMET's site / any public info for domain context (industry, product)
