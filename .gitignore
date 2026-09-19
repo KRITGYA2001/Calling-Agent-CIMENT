@@ -25,3 +25,10 @@ data/*
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Runtime call state
+backend/app/data/calls.json
+backend/app/data/cimet.db*
+
+# Docs kept local only
+*.md

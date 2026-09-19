@@ -1,0 +1,94 @@
+{
+  "vertical": "energy",
+  "name": "econnex Energy comparison — dropout recovery (placeholder field list; swap for the on-site sandbox schema)",
+  "intro_disclosure": "Hi, this is Ava, an AI assistant calling from econnex. This call is recorded. You started comparing energy plans with us — mind if I help you finish?",
+  "opener_template": "Hi {first_name}, this is Ava, an AI assistant from econnex, and this call is recorded. You started comparing energy plans with us {dropout_when}. Is it okay if I help you finish?",
+  "guardrails": [
+    "The contact/phone number is locked: it is the number we call and it can be confirmed but never changed by voice. Refuse politely, keep the number on file, and offer a verified follow-up instead.",
+    "Consent first: nothing is asked or recorded until the customer says yes to continuing on a recorded line.",
+    "Never collect, repeat or read back card numbers, CVV or bank details by voice. Payment is direct debit or BPAY preference only.",
+    "Never give advice (which plan is best, whether to switch, what they should do). Only state the facts shown on the comparison.",
+    "Always ask the life-support question. Never skip it.",
+    "If the customer says stop, not interested, or asks to be removed: thank them, log it, end the call. No persuasion, no second attempt.",
+    "Never improvise outside this script. Anything else goes to a human."
+  ],
+  "escalation_scripts": {
+    "anger": "I can hear this has been frustrating, and I'm sorry. Let me get one of my colleagues on the line — they'll already see everything we've covered, so you won't need to repeat yourself.",
+    "confusion": "I don't want to keep getting this wrong. Let me bring in a colleague who can sort it out with you — they'll see everything so far.",
+    "off_script": "That's a great question, and one I can't answer properly. A colleague can. I'll pass everything across so you don't have to repeat it.",
+    "sensitive_topic": "That's something I'd like a person to handle with you directly. I'm passing over everything we've covered so you won't need to repeat any of it.",
+    "explicit_human_request": "Of course — let me connect you with a colleague right now. They'll have everything we've covered.",
+    "low_confidence": "I want to be sure I get this exactly right, so I'll hand you to a colleague who can double-check it with you. They'll see everything so far."
+  },
+  "handoff_script": "Hi {first_name}, this is {agent_name} — I can see everything so far, no need to repeat anything.",
+  "decline_script": "No problem at all, {first_name}. Thanks for your time — I won't call again about this. Have a good day.",
+  "busy_script": "No worries — when would be a better time for me to call you back?",
+  "payment_boundary_script": "I'll stop you there — for your safety I can't take card or bank details over the phone. I'll pass you to a colleague, or you can pay on the secure page.",
+  "close_script": "That's everything submitted, {first_name}. You'll get a confirmation by email shortly. Thanks for your time — goodbye.",
+  "sections": [
+    {
+      "id": "identity_consent",
+      "title": "Identity & Consent",
+      "script": "First, a quick couple of checks so I know I have the right person.",
+      "fields": [
+        { "id": "consent_recording", "label": "Consent to continue on a recorded line", "ask_hint": "Explicit yes needed before anything else.", "type": "boolean", "required": true,
+          "script": "Are you happy to continue on this recorded line?", "reprompt": "Just to check, is it okay to carry on with the call being recorded?" },
+        { "id": "full_name", "label": "Full name", "ask_hint": "Confirm the name on the account.", "type": "text", "required": true,
+          "script": "Can I confirm your full name as it should appear on the account?", "reprompt": "Sorry, could you spell your surname for me?" },
+        { "id": "date_of_birth", "label": "Date of birth", "ask_hint": "Needed to verify identity. Customer must be 18+.", "type": "date", "required": true, "validation": "dob",
+          "script": "And your date of birth, please?", "reprompt": "Sorry — could you give me the day, month and year of your birth, one at a time?" },
+        { "id": "contact_phone", "label": "Best contact number", "ask_hint": "Confirm the number we are calling. It cannot be changed by voice.", "type": "text", "required": true, "locked": true, "validation": "phone",
+          "script": "Is the number I'm calling you on the best one to reach you?", "reprompt": "Sorry, is this number, the one I'm calling you on, still the best way to reach you?" },
+        { "id": "contact_email", "label": "Email address", "ask_hint": "For the plan confirmation.", "type": "text", "required": true, "validation": "email",
+          "script": "What email address should we send the confirmation to?", "reprompt": "Could you spell that email out for me, letter by letter, saying 'at' and 'dot' where they go?" }
+      ]
+    },
+    {
+      "id": "property_supply",
+      "title": "Property & Current Supply",
+      "script": "Great, thanks. Now a few questions about the property.",
+      "fields": [
+        { "id": "service_address", "label": "Service address", "ask_hint": "The property being connected or switched.", "type": "text", "required": true,
+          "script": "What's the address of the property this is for?", "reprompt": "Sorry, could you give me the street number and street name again?" },
+        { "id": "move_in_date", "label": "Move-in date", "ask_hint": "Only if this is a new connection.", "type": "date", "required": false,
+          "script": "Are you moving in? If so, what's the move-in date?", "reprompt": "What day, month and year are you moving in?" },
+        { "id": "current_retailer", "label": "Current energy retailer", "ask_hint": "Who supplies the property today, if anyone.", "type": "text", "required": false,
+          "script": "Who supplies your energy at the moment?", "reprompt": "Which company sends you the energy bill?" },
+        { "id": "nmi_or_mirn", "label": "NMI / MIRN", "ask_hint": "Meter identifier from a recent bill, only if they have it handy.", "type": "text", "required": false, "validation": "nmi",
+          "script": "If you have a recent bill handy, can you read me the meter number — the NMI? No worries if not.", "reprompt": "Take your time — read it out a few characters at a time." },
+        { "id": "life_support_flag", "label": "Life support equipment at the property", "ask_hint": "Mandatory regulatory question — always ask, never skip.", "type": "boolean", "required": true,
+          "script": "Does anyone at the property use life-support equipment that needs a continuous power supply?", "reprompt": "Sorry, just to be clear — is there any life-support equipment at the property, yes or no?" },
+        { "id": "concession_card_flag", "label": "Concession card holder", "ask_hint": "Checks eligibility for concession pricing.", "type": "boolean", "required": true,
+          "script": "Do you hold a concession card?", "reprompt": "Is that a yes or a no on the concession card?" }
+      ]
+    },
+    {
+      "id": "plan_selection",
+      "title": "Plan Selection",
+      "script": "Now the plan itself.",
+      "fields": [
+        { "id": "selected_retailer", "label": "Selected retailer", "ask_hint": "Which retailer from the comparison the customer wants.", "type": "text", "required": true,
+          "script": "Which retailer's plan were you leaning towards from the comparison?", "reprompt": "Which company was it again?" },
+        { "id": "selected_plan_name", "label": "Selected plan", "ask_hint": "Which specific plan. State facts only, never recommend.", "type": "text", "required": true,
+          "script": "And which plan from them?", "reprompt": "Could you tell me the plan name once more?" },
+        { "id": "estimated_annual_usage_kwh", "label": "Estimated annual usage (kWh)", "ask_hint": "Customer's own estimate, or skip if unsure.", "type": "number", "required": false, "validation": "positive_number",
+          "script": "Roughly how much electricity do you use in a year? A rough number is fine, or skip it.", "reprompt": "Roughly how many kilowatt hours a year?" },
+        { "id": "preferred_billing_cycle", "label": "Preferred billing cycle", "ask_hint": "Monthly or quarterly.", "type": "enum", "options": ["monthly", "quarterly"], "required": true,
+          "script": "Would you prefer to be billed monthly or quarterly?", "reprompt": "Sorry — monthly or quarterly?" }
+      ]
+    },
+    {
+      "id": "payment_confirmation",
+      "title": "Payment & Confirmation",
+      "script": "Nearly there — just payment preference and a final check.",
+      "fields": [
+        { "id": "payment_method", "label": "Payment method preference", "ask_hint": "Direct debit or BPAY only. NEVER capture card or bank numbers.", "type": "enum", "options": ["direct_debit", "bpay"], "required": true, "sensitive": true,
+          "script": "Would you prefer to pay by direct debit or BPAY? Just the preference — please don't read out any account or card numbers.", "reprompt": "Direct debit or BPAY — which would you like?" },
+        { "id": "cooling_off_acknowledged", "label": "Cooling-off period acknowledged", "ask_hint": "Customer confirms they understand cooling-off rights.", "type": "boolean", "required": true,
+          "script": "You have a cooling-off period after signing up where you can change your mind. Do you understand that?", "reprompt": "Is that clear — you can cancel within the cooling-off period? Yes or no?" },
+        { "id": "confirm_details", "label": "Final read-back confirmed", "ask_hint": "Read every captured field back; explicit yes before completing.", "type": "boolean", "required": true,
+          "script": "Let me read everything back to you. Is all of that correct?", "reprompt": "Is everything I read out correct, yes or no?" }
+      ]
+    }
+  ]
+}
